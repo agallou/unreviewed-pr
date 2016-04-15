@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <script src="https://www.hipchat.com/atlassian-connect/all.js"></script>
+        <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.9.5/css/aui.css" media="all">
+        <script>
+            function poptastic(url) {
+                var newWindow = window.open(url, 'name', 'height=768,width=1024');
+                if (window.focus) {
+                    newWindow.focus();
+                }
+            }
+        </script>
+    </head>
+    <body style="background-color: #fff;text-align: center">
+        <a class="aui-button aui-button-primary" href="javascript:poptastic('/login_github');">Connect your github account</a>
+    </body>
+</html>

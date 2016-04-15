@@ -34,4 +34,20 @@ class SubscriberModel extends Model
         $this->structure = new SubscriberStructure;
         $this->flexible_entity_class = '\HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\Subscriber';
     }
+
+    /**
+     * @param string $hipCharOauthId
+     *
+     * @return array|mixed|null
+     */
+    public function findOneByHipchatOAuthId($hipCharOauthId)
+    {
+        $videos = $this->findWhere('hipchat_oauth_id = $*', array($hipCharOauthId));
+        if ($videos->isEmpty()) {
+            return null;
+        }
+
+        return $videos->current();
+    }
+
 }
