@@ -1,0 +1,1 @@
+./vendor/bin/pomm.php  pomm:generate:schema-all -d src/Model -a 'HipchatConnectTools\UnreviewedPr\Model' --psr4 project_db
