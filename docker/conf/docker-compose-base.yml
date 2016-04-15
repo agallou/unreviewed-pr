@@ -1,0 +1,30 @@
+db:
+  image: postgres:9.2
+  environment:
+    POSTGRES_PASSWORD: passwd
+    POSTGRES_DB: "unreviewedpr"
+  volumes:
+    - ../../data/postgres:/var/lib/postgresql/data
+
+apachephp:
+  build: ./apachephp
+  volumes:
+    - ../../:/var/www/html
+  environment:
+      PGSQL_USER: postgres
+      PGSQL_PASSWORD: passwd
+      PGSQL_DB: unreviewedpr
+      PGSQL_HOST: db
+      PGSQL_PORT: 5432
+
+cliphp:
+  build: ./cliphp
+  working_dir: /var/www/html
+  volumes:
+    - ../../:/var/www/html
+  environment:
+      PGSQL_USER: postgres
+      PGSQL_PASSWORD: passwd
+      PGSQL_DB: unreviewedpr
+      PGSQL_HOST: db
+      PGSQL_PORT: 5432

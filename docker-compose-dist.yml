@@ -1,0 +1,31 @@
+apachephp:
+  extends:
+    file: docker/conf/docker-compose-base.yml
+    service: apachephp
+  ports:
+    - "9094:80"
+  links:
+    - db
+
+db:
+  extends:
+    file: docker/conf/docker-compose-base.yml
+    service: db
+
+cliphp:
+  extends:
+    file: docker/conf/docker-compose-base.yml
+    service: cliphp
+  command: "false"
+  links:
+    - db
+
+clidb:
+  extends:
+    file: docker/conf/docker-compose-base.yml
+    service: db
+  links:
+    - db
+  environment:
+    PGPASSWORD: passwd
+  command: "false"

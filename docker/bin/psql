@@ -1,0 +1,1 @@
+docker-compose run clidb psql -h db -p 5432 -U postgres unreviewedpr $@
