@@ -10,9 +10,9 @@ namespace HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\AutoStru
 use PommProject\ModelManager\Model\RowStructure;
 
 /**
- * Subsribers
+ * Subscriber
  *
- * Structure class for relation public.subsribers.
+ * Structure class for relation public.subscriber.
  * 
  * Class and fields comments are inspected from table and fields comments.
  * Just add comments in your database and they will appear here.
@@ -22,7 +22,7 @@ use PommProject\ModelManager\Model\RowStructure;
  *
  * @see RowStructure
  */
-class Subsribers extends RowStructure
+class Subscriber extends RowStructure
 {
     /**
      * __construct
@@ -34,11 +34,11 @@ class Subsribers extends RowStructure
     public function __construct()
     {
         $this
-            ->setRelation('public.subsribers')
+            ->setRelation('public.subscriber')
             ->setPrimaryKey(['hipchat_oauth_id'])
             ->addField('hipchat_oauth_id', 'varchar')
             ->addField('hipchat_oauth_secret', 'varchar')
-            ->addField('rooom_id', 'varchar')
+            ->addField('room_id', 'varchar')
             ->addField('group_id', 'varchar')
             ->addField('github_token', 'varchar')
             ;

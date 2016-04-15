@@ -5,13 +5,13 @@ namespace HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema;
 use PommProject\ModelManager\Model\FlexibleEntity;
 
 /**
- * Subsribers
+ * Subscriber
  *
  * Flexible entity for relation
- * public.subsribers
+ * public.subscriber
  *
  * @see FlexibleEntity
  */
-class Subsribers extends FlexibleEntity
+class Subscriber extends FlexibleEntity
 {
 }

@@ -8,17 +8,17 @@ use PommProject\ModelManager\Model\ModelTrait\WriteQueries;
 
 use PommProject\Foundation\Where;
 
-use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\AutoStructure\Subsribers as SubsribersStructure;
-use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\Subsribers;
+use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\AutoStructure\Subscriber as SubscriberStructure;
+use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\Subscriber;
 
 /**
- * SubsribersModel
+ * SubscriberModel
  *
- * Model class for table subsribers.
+ * Model class for table subscriber.
  *
  * @see Model
  */
-class SubsribersModel extends Model
+class SubscriberModel extends Model
 {
     use WriteQueries;
 
@@ -31,7 +31,7 @@ class SubsribersModel extends Model
      */
     public function __construct()
     {
-        $this->structure = new SubsribersStructure;
-        $this->flexible_entity_class = '\HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\Subsribers';
+        $this->structure = new SubscriberStructure;
+        $this->flexible_entity_class = '\HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\Subscriber';
     }
 }

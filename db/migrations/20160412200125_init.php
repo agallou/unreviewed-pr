@@ -7,12 +7,12 @@ class Init extends AbstractMigration
     public function change()
     {
         $this
-            ->table('subsribers', array('id' => false, 'primary_key' => 'hipchat_oauth_id'))
+            ->table('subscriber', array('id' => false, 'primary_key' => 'hipchat_oauth_id'))
                 ->addColumn('hipchat_oauth_id', 'string', array('length' => 60))
                 ->addColumn('hipchat_oauth_secret', 'string', array('length' => 60))
-                ->addColumn('rooom_id', 'string', array('length' => 30))
+                ->addColumn('room_id', 'string', array('length' => 30))
                 ->addColumn('group_id', 'string', array('length' => 30))
-                ->addColumn('github_token', 'string', array('length' => 60))
+                ->addColumn('github_token', 'string', array('length' => 60, 'null' => true))
                 ->create()
         ;
 
@@ -28,7 +28,7 @@ class Init extends AbstractMigration
                 ->addColumn('repository_id', 'string', array('length' => 20))
                 ->addColumn('hipchat_oauth_id', 'string', array('length' => 60))
                 ->addForeignKey('repository_id', 'repository', 'id')
-                ->addForeignKey('hipchat_oauth_id', 'subsribers', 'hipchat_oauth_id')
+                ->addForeignKey('hipchat_oauth_id', 'subscriber', 'hipchat_oauth_id')
                 ->create()
         ;
 
