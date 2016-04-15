@@ -1,0 +1,13 @@
+{
+    "require": {
+        "silex/silex": "^1.3",
+        "php-di/silex-bridge": "^1.5",
+        "league/oauth2-github": "^0.2.0",
+        "lcobucci/jwt": "^3.1",
+        "twig/twig": "^1.24",
+        "robmorgan/phinx": "^0.5.3",
+        "pomm-project/cli": "^2.0",
+        "pomm-project/model-manager": "^2.0",
+        "pomm-project/foundation": "^2.0"
+    }
+}
