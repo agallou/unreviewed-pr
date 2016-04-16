@@ -2,6 +2,11 @@
 use Interop\Container\ContainerInterface;
 
 return [
+    'controllers.hipchat.capabilities' => function(ContainerInterface $container) {
+        return new \HipchatConnectTools\UnreviewedPr\Controller\Hipchat\Capabilities(
+            $container->get('app.url')
+        );
+    },
     'controllers.hipchat.install' => function(ContainerInterface $container) {
         return new \HipchatConnectTools\UnreviewedPr\Controller\Hipchat\Install(
             $container->get('model.subscriber')
