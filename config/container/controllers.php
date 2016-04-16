@@ -27,6 +27,9 @@ return [
             $container->get('github')
         );
     },
+    'controllers.github.webhook' => function() {
+        return new \HipchatConnectTools\UnreviewedPr\Controller\Github\Webhook();
+    },
     'controllers.app.list_repositories' => function(ContainerInterface $container) {
         return new \HipchatConnectTools\UnreviewedPr\Controller\App\ListRepositories(
             $container->get('model.subscriber')
