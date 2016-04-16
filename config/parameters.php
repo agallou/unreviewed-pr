@@ -9,4 +9,5 @@ return [
     'github.client_id' => DI\env('GITHUB_CLIENT_ID'),
     'github.client_secret' => DI\env('GITHUB_CLIENT_SECRET'),
     'app.url' => DI\env('APP_URL'),
+    'app.debug' => DI\env('APP_DEBUG', false),
 ];
