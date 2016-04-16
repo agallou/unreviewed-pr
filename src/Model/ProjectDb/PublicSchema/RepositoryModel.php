@@ -34,4 +34,30 @@ class RepositoryModel extends Model
         $this->structure = new RepositoryStructure;
         $this->flexible_entity_class = '\HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\Repository';
     }
+
+    /**
+     * @param Subscriber $subscriber
+     *
+     * @return \PommProject\ModelManager\Model\CollectionIterator
+     *
+     * @throws \PommProject\ModelManager\Exception\ModelException
+     */
+    public function findAllOfSubscriber(Subscriber $subscriber)
+    {
+        $sql = <<<EOF
+select :fields
+from :table main_table
+join room_repository on (main_table.id = room_repository.repository_id)
+where room_repository.hipchat_oauth_id = $*
+EOF;
+        $sql = strtr(
+            $sql,
+            [
+                ':fields' => $this->createProjection()->formatFieldsWithFieldAlias('main_table'),
+                ':table'  => $this->getStructure()->getRelation(),
+            ]
+        );
+
+        return $this->query($sql, array($subscriber->get('hipchat_oauth_id')));
+    }
 }

@@ -45,9 +45,12 @@ return [
     },
     'controllers.app.list_repositories' => function(ContainerInterface $container) {
         return new \HipchatConnectTools\UnreviewedPr\Controller\App\ListRepositories(
-            $container->get('model.subscriber'),
+            $container->get('model.repository'),
+            $container->get('model.room_repository'),
             $container->get('session'),
-            $container->get('github')
+            $container->get('github'),
+            $container->get('form.factory'),
+            $container->get('twig')
         );
     },
 ];

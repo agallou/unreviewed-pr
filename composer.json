@@ -8,7 +8,13 @@
         "robmorgan/phinx": "^0.5.3",
         "pomm-project/cli": "^2.0",
         "pomm-project/model-manager": "^2.0",
-        "pomm-project/foundation": "^2.0"
+        "pomm-project/foundation": "^2.0",
+        "symfony/form": "^2.3",
+        "symfony/validator": "^2.3",
+        "symfony/config": "^2.3",
+        "symfony/translation": "^2.3",
+        "symfony/twig-bridge": "^2.3",
+        "symfony/security-csrf": "^2.3"
     },
     "autoload": {
         "psr-4": {

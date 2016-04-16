@@ -12,6 +12,11 @@ if (1 == $app['app.debug']) {
 
 $app->register(new \Silex\Provider\SessionServiceProvider());
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
+$app->register(new Silex\Provider\FormServiceProvider());
+$app->register(new Silex\Provider\ValidatorServiceProvider());
+$app->register(new Silex\Provider\TranslationServiceProvider(), array(
+    'translator.domains' => array(),
+));
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../views',
 ));
@@ -31,7 +36,7 @@ $app->get('/sidebar', "controllers.hipchat.webPanel:action")
 $app->get('/login_github', "controllers.github.login:action");
 $app->match('/github/webhook', 'controllers.github.webhook:action');
 
-$app->get('/app/list_repositories', "controllers.app.list_repositories:action")
+$app->match('/app/list_repositories', "controllers.app.list_repositories:action")
     ->before($app['middleware.needs_subscriber'])
     ->before($app['middleware.needs_github_token'])
 ;
