@@ -14,4 +14,9 @@ return [
             $container->get('twig')
         );
     },
+    'controllers.app.list_repositories' => function(ContainerInterface $container) {
+        return new \HipchatConnectTools\UnreviewedPr\Controller\App\ListRepositories(
+            $container->get('model.subscriber')
+        );
+    },
 ];

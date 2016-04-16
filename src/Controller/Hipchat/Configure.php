@@ -5,6 +5,7 @@ namespace HipchatConnectTools\UnreviewedPr\Controller\Hipchat;
 use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\SubscriberModel;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -46,30 +47,19 @@ class Configure
     public function action(Request $request)
     {
         $parser = new Parser();
-        $signer = new Sha256();
-
         $token = $parser->parse($request->get('signed_request'));
-
         $oAuthId = $token->getClaim('iss');
 
-        $subscriber = $this->subscriberModel->findOneByHipchatOAuthId($oAuthId);
-
-        if (null === $subscriber) {
+        if (null === ($subscriber = $this->subscriberModel->findOneByHipchatOAuthId($oAuthId))) {
             return new Response("user not found", 500);
         }
 
-        $this->session->set('hipchat_user', $oAuthId);
-
-        $oAuthSecret = $subscriber->get('hipchat_oauth_secret');
-
-        if (!$token->verify($signer, $oAuthSecret)) {
+        if (!$token->verify(new Sha256(), $subscriber->get('hipchat_oauth_secret'))) {
             return new Response("unauthorized call", 401);
         }
 
-        if (null === $subscriber->get('github_token')) {
-            return $this->twig->render('github_login.html.twig', array());
-        }
+        $this->session->set('subscriber', $subscriber);
 
-        return new Response("Configuration");
+        return new RedirectResponse('/app/list_repositories');
     }
 }
