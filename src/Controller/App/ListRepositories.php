@@ -134,19 +134,17 @@ class ListRepositories
         $this->roomRepositoryModel->deleteWhere('hipchat_oauth_id = $*', [$subscriber->get('hipchat_oauth_id')]);
 
         foreach ($repos as $id => $label) {
+            if (!$this->repositoryModel->existWhere('id = $*', array($id))) {
+                $this->repositoryModel->createAndSave(array(
+                    'id' => $id,
+                    'full_name' => substr($label, 0, 40), //TODO update field length
+                ));
+            }
+
             $this->roomRepositoryModel->createAndSave([
                 'repository_id' => $id,
                 'hipchat_oauth_id' => $subscriber->get('hipchat_oauth_id'),
             ]);
-
-            if ($this->repositoryModel->existWhere('id = $*', array($id))) {
-                continue;
-            }
-
-            $this->repositoryModel->createAndSave(array(
-                'id' => $id,
-                'full_name' => substr($label, 0, 40), //TODO update field length
-            ));
         }
     }
 }
