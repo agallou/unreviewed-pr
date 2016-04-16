@@ -48,7 +48,7 @@ class NeedsGithubToken
         }
 
         if (null === $subscriber->get('github_token')) {
-            return new Response($this->twig->render('github_login.html.twig'));
+            return new Response($this->twig->render('github/login.html.twig'));
         }
     }
 }

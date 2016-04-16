@@ -4,6 +4,10 @@ apachephp:
     service: apachephp
   ports:
     - "9094:80"
+  environment:
+    GITHUB_CLIENT_ID: ""
+    GITHUB_CLIENT_SECRET: ""
+    APP_URL: "https://example.ngrok.io"
   links:
     - db
 

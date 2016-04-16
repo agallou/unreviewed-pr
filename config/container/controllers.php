@@ -14,6 +14,14 @@ return [
             $container->get('twig')
         );
     },
+    'controllers.github.login' => function(ContainerInterface $container) {
+        return new \HipchatConnectTools\UnreviewedPr\Controller\Github\Login(
+            $container->get('model.subscriber'),
+            $container->get('session'),
+            $container->get('twig'),
+            $container->get('github')
+        );
+    },
     'controllers.app.list_repositories' => function(ContainerInterface $container) {
         return new \HipchatConnectTools\UnreviewedPr\Controller\App\ListRepositories(
             $container->get('model.subscriber')
