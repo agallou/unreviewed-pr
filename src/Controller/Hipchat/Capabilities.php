@@ -41,6 +41,30 @@ class Capabilities
             'send_notification',
         );
 
+        $capabilities['capabilities']['glance'][] = [
+            'name' =>[
+                'value' => 'Unreviewed PR',
+            ],
+            'queryUrl' => $this->baseUrl . '/glance',
+            'key' => 'unreviewed-pr-glance',
+            'target' => 'unreviewed-pr-list',
+            'icon' => [
+                'url' => $this->baseUrl . '/images/unreviewed-pr-glance.png',
+                'url@2x' => $this->baseUrl . '/images/unreviewed-pr-glance.png',
+            ],
+            'conditions' => [],
+        ];
+
+
+        $capabilities['capabilities']['webPanel'][] = [
+            'key' => 'unreviewed-pr-list',
+            'name' => [
+                'value' => 'List of unreviewed PR',
+            ],
+            'location' => 'hipchat.sidebar.right',
+            'url' => $this->baseUrl . '/sidebar'
+        ];
+
         $capabilities['capabilities']['installable']['allowGlobal'] = false;
         $capabilities['capabilities']['installable']['allowRoom'] = true;
         $capabilities['capabilities']['installable']['callbackUrl'] = $this->baseUrl . '/installed';

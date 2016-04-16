@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <script src="https://www.hipchat.com/atlassian-connect/all.js"></script>
+        <link rel="stylesheet" href="//aui-cdn.atlassian.com/aui-adg/5.9.5/css/aui.css" media="all">
+        <style>
+            .hc-roster-item {
+                font-size: 11px;
+                line-height: 16px;
+            }
+
+            .aui-nav-item {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                padding: 5px 10px;
+            }
+
+            .hc-link {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                display: block;
+            }
+
+            .hc-roster-user-name, .hc-roster-date {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                cursor: default;
+                width: 48%;
+                display: block;
+                float: left;
+                text-align: left;
+            }
+
+            .hc-roster-date {
+                padding-left: 4%;
+                text-align: right;
+            }
+
+        </style>
+    </head>
+    <body>
+        <ul class="aui-nav aui-navgroup-vertical" style="background-color: #fff">
+            {% for pull_request in pull_requests %}
+            <li class="hc-roster-item">
+                <div class="aui-nav-item" title="http://www.google.fr">
+                    <a class="hc-link" target="_blank" rel="noreferrer" href="http://github.com/{{ pull_request.repository_full_name }}/pull/{{ pull_request.number }}">{{ pull_request.get('label') }}</a>
+                    <span class="hc-roster-user-name">{{ pull_request.repository_full_name }}</span>
+                    <span class="hc-roster-date">Aug-24 10:37 PM</span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>

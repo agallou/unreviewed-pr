@@ -20,6 +20,14 @@ $app->get('/capabilities', "controllers.hipchat.capabilities:action");
 $app->post('/installed', "controllers.hipchat.install:action");
 $app->get('/configure', "controllers.hipchat.configure:action");
 
+$app->get('/glance', "controllers.hipchat.glance:action")
+    ->after($app['middleware.send_cors'])
+;
+
+$app->get('/sidebar', "controllers.hipchat.webPanel:action")
+    ->after($app['middleware.send_cors'])
+;
+
 $app->get('/login_github', "controllers.github.login:action");
 $app->match('/github/webhook', 'controllers.github.webhook:action');
 

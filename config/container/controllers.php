@@ -14,8 +14,21 @@ return [
     },
     'controllers.hipchat.configure' => function(ContainerInterface $container) {
         return new \HipchatConnectTools\UnreviewedPr\Controller\Hipchat\Configure(
-            $container->get('model.subscriber'),
+            $container->get('hipchat.jwt_parser'),
             $container->get('session'),
+            $container->get('twig')
+        );
+    },
+    'controllers.hipchat.glance' => function(ContainerInterface $container) {
+        return new \HipchatConnectTools\UnreviewedPr\Controller\Hipchat\Glance(
+            $container->get('hipchat.jwt_parser'),
+            $container->get('model.room_repository')
+        );
+    },
+    'controllers.hipchat.webPanel' => function(ContainerInterface $container) {
+        return new \HipchatConnectTools\UnreviewedPr\Controller\Hipchat\WebPanel(
+            $container->get('hipchat.jwt_parser'),
+            $container->get('model.room_repository'),
             $container->get('twig')
         );
     },

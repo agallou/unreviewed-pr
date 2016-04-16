@@ -34,4 +34,62 @@ class RoomRepositoryModel extends Model
         $this->structure = new RoomRepositoryStructure;
         $this->flexible_entity_class = '\HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\RoomRepository';
     }
+
+    /**
+     * @param Subscriber $subscriber
+     *
+     * @return int
+     *
+     * @throws \PommProject\ModelManager\Exception\ModelException
+     */
+    public function getUnreviewedPrCount(Subscriber $subscriber)
+    {
+        $sql = <<<EOF
+select count(*) as result
+from
+    room_repository
+    inner join pull_request using (repository_id)
+where
+  :condition
+EOF;
+
+        $where = 'comment_count = $* and hipchat_oauth_id = $*';
+        $values = array('0', $subscriber->get('hipchat_oauth_id'));
+
+        return $this->fetchSingleValue($sql, $where, $values);
+    }
+
+    /**
+     * @param Subscriber $subscriber
+     *
+     * @return int
+     *
+     * @throws \PommProject\ModelManager\Exception\ModelException
+     */
+    public function findUnreviewedPr(Subscriber $subscriber)
+    {
+        $sql = <<<EOF
+select
+    pull_request.id,
+    pull_request.number,
+    pull_request.label,
+    repository.full_name as repository_full_name
+from room_repository tabalias
+    inner join pull_request using (repository_id)
+    inner join repository on (pull_request.repository_id = repository.id)
+where
+  :condition
+EOF;
+
+        $where = 'comment_count = $* and hipchat_oauth_id = $*';
+        $values = array('0', $subscriber->get('hipchat_oauth_id'));
+
+        $sql = strtr(
+            $sql,
+            array(
+                ':condition' => $where,
+            )
+        );
+        return $this->query($sql, $values);
+    }
 }

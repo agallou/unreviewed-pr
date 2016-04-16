@@ -18,4 +18,7 @@ return [
 
         return array($middleware, 'handle');
     },
+    'middleware.send_cors' => function() {
+        return array(new \HipchatConnectTools\UnreviewedPr\Middleware\SendCors(), 'handle');
+    },
 ];

@@ -3,12 +3,11 @@
 namespace HipchatConnectTools\UnreviewedPr\Controller\Hipchat;
 
 use HipchatConnectTools\UnreviewedPr\Hipchat\JwtParser;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\RoomRepositoryModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
 
-class Configure
+class WebPanel
 {
     /**
      * @var JwtParser
@@ -16,9 +15,9 @@ class Configure
     protected $jwtParser;
 
     /**
-     * @var Session
+     * @var RoomRepositoryModel
      */
-    protected $session;
+    protected $roomRepositoryModel;
 
     /**
      * @var \Twig_Environment
@@ -27,13 +26,13 @@ class Configure
 
     /**
      * @param JwtParser $jwtParser
-     * @param Session $session
+     * @param RoomRepositoryModel $roomRepositoryModel
      * @param \Twig_Environment $twig
      */
-    public function __construct(JwtParser $jwtParser, Session $session, \Twig_Environment $twig)
+    public function __construct(JwtParser $jwtParser, RoomRepositoryModel $roomRepositoryModel, \Twig_Environment $twig)
     {
         $this->jwtParser = $jwtParser;
-        $this->session = $session;
+        $this->roomRepositoryModel = $roomRepositoryModel;
         $this->twig = $twig;
     }
 
@@ -48,8 +47,11 @@ class Configure
             return new Response("unauthorized call", 401);
         }
 
-        $this->session->set('subscriber', $subscriber);
-
-        return new RedirectResponse('/app/list_repositories');
+        return new Response($this->twig->render(
+            'sidebar.html.twig',
+            array(
+                'pull_requests' => $this->roomRepositoryModel->findUnreviewedPr($subscriber)
+            )
+        ));
     }
 }
