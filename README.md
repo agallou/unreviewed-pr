@@ -11,7 +11,7 @@ Install
 * `./docker/bin/launch-bash`
 
     * `composer install`
-    * `./vendir/bin/phinx migrate`
+    * `./vendor/bin/phinx migrate`
 
 Dev tools
 ---------
