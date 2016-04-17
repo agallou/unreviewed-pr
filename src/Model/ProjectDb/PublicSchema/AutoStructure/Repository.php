@@ -38,6 +38,7 @@ class Repository extends RowStructure
             ->setPrimaryKey(['id'])
             ->addField('id', 'varchar')
             ->addField('full_name', 'varchar')
+            ->addField('github_webhook_secret', 'varchar')
             ;
     }
 }

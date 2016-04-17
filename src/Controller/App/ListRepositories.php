@@ -44,12 +44,18 @@ class ListRepositories
     protected $roomRepositoryModel;
 
     /**
+     * @var string
+     */
+    protected $appUrl;
+
+    /**
      * @param RepositoryModel $repositoryModel
      * @param RoomRepositoryModel $roomRepositoryModel
      * @param Session $session
      * @param Github $github
      * @param FormFactory $formFactory
      * @param \Twig_Environment $twig
+     * @param string $appUrl
      */
     public function __construct(
         RepositoryModel $repositoryModel,
@@ -57,7 +63,8 @@ class ListRepositories
         Session $session,
         Github $github,
         FormFactory $formFactory,
-        \Twig_Environment $twig
+        \Twig_Environment $twig,
+        $appUrl
     ) {
         $this->repositoryModel = $repositoryModel;
         $this->roomRepositoryModel = $roomRepositoryModel;
@@ -65,6 +72,7 @@ class ListRepositories
         $this->github = $github;
         $this->formFactory = $formFactory;
         $this->twig = $twig;
+        $this->appUrl = $appUrl;
     }
 
     /**
@@ -135,9 +143,36 @@ class ListRepositories
 
         foreach ($repos as $id => $label) {
             if (!$this->repositoryModel->existWhere('id = $*', array($id))) {
+                $secret = md5(microtime() . uniqid('', true));
+
+                $body = array(
+                    'name' => 'web',
+                    'events' => ['commit_comment', 'pull_request', 'issue_comment', 'pull_request_review_comment'],
+                    'config' => [
+                        'url' => $this->appUrl . '/github/webhook',
+                        'secret' => $secret,
+                        'content_type' => 'json',
+                    ],
+                    'active' => true,
+                );
+
+                $githubRequest = $this->github->getAuthenticatedRequest(
+                    'POST',
+                    'https://api.github.com/repos/' . $label . '/hooks',
+                    $subscriber->get('github_token'),
+                    ['body' => json_encode($body)]
+                );
+
+                try {
+                    $this->github->getResponse($githubRequest);
+                } catch (\Exception $e) {
+                    //in case the hook already exists
+                }
+
                 $this->repositoryModel->createAndSave(array(
                     'id' => $id,
                     'full_name' => substr($label, 0, 40), //TODO update field length
+                    'github_webhook_secret' => $secret,
                 ));
             }
 

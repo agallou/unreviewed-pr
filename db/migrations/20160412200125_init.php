@@ -21,6 +21,7 @@ class Init extends AbstractMigration
             ->table('repository', array('id' => false, 'primary_key' => 'id'))
                 ->addColumn('id', 'string', array('length' => 20))
                 ->addColumn('full_name', 'string', array('length' => 40))
+                ->addColumn('github_webhook_secret', 'string', array('length' => 255, 'null' => true))
                 ->create()
         ;
 

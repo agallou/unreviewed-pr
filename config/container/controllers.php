@@ -62,7 +62,8 @@ return [
             $container->get('session'),
             $container->get('github'),
             $container->get('form.factory'),
-            $container->get('twig')
+            $container->get('twig'),
+            $container->get('app.url')
         );
     },
 ];
