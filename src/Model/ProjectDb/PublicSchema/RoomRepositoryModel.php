@@ -73,6 +73,7 @@ select
     pull_request.id,
     pull_request.number,
     pull_request.label,
+    pull_request.opened_at,
     repository.full_name as repository_full_name
 from room_repository tabalias
     inner join pull_request using (repository_id)

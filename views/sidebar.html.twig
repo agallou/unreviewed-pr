@@ -47,7 +47,7 @@
                 <div class="aui-nav-item" title="http://www.google.fr">
                     <a class="hc-link" target="_blank" rel="noreferrer" href="http://github.com/{{ pull_request.repository_full_name }}/pull/{{ pull_request.number }}">{{ pull_request.get('label') }}</a>
                     <span class="hc-roster-user-name">{{ pull_request.repository_full_name }}</span>
-                    <span class="hc-roster-date">Aug-24 10:37 PM</span>
+                    <span class="hc-roster-date">{{ pull_request.opened_at|date('M-d H:i') }}</span>
                 </div>
             </li>
             {% endfor %}
