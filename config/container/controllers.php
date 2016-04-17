@@ -49,6 +49,12 @@ return [
             $container->get('github')
         );
     },
+    'controllers.app.index' => function(ContainerInterface $container) {
+        return new \HipchatConnectTools\UnreviewedPr\Controller\App\Index(
+            $container->get('twig'),
+            $container->get('app.url')
+        );
+    },
     'controllers.app.list_repositories' => function(ContainerInterface $container) {
         return new \HipchatConnectTools\UnreviewedPr\Controller\App\ListRepositories(
             $container->get('model.repository'),

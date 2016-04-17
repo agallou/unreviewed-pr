@@ -36,6 +36,7 @@ $app->get('/sidebar', "controllers.hipchat.webPanel:action")
 $app->get('/login_github', "controllers.github.login:action");
 $app->match('/github/webhook', 'controllers.github.webhook:action');
 
+$app->get('/', "controllers.app.index:action");
 $app->match('/app/list_repositories', "controllers.app.list_repositories:action")
     ->before($app['middleware.needs_subscriber'])
     ->before($app['middleware.needs_github_token'])
