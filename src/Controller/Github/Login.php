@@ -70,10 +70,11 @@ class Login
             'code' => $request->get('code')
         ]);
 
-        $this->subscriberModel->updateByPk(
-            ['hipchat_oauth_id' => $this->session->get('subscriber')->get('hipchat_oauth_id')],
-            ['github_token' => $token->getToken()]
-        );
+        $subscriber = $this->session->get('subscriber');
+        $subscriber->set('github_token', $token->getToken());
+
+        $this->subscriberModel->updateOne($subscriber, array('github_token'));
+        $this->session->set('subscriber', $subscriber);
 
         return new Response($this->twig->render('github/callback.html.twig'));
     }
