@@ -2,8 +2,8 @@
 
 namespace HipchatConnectTools\UnreviewedPr\Controller\Hipchat;
 
+use HipchatConnectTools\UnreviewedPr\Hipchat\GlanceFactory;
 use HipchatConnectTools\UnreviewedPr\Hipchat\JwtParser;
-use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\RoomRepositoryModel;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,18 +16,18 @@ class Glance
     protected $jwtParser;
 
     /**
-     * @var RoomRepositoryModel
+     * @var GlanceFactory
      */
-    protected $roomRepositoryModel;
+    protected $glanceFactory;
 
     /**
      * @param JwtParser $jwtParser
-     * @param RoomRepositoryModel $roomRepositoryModel
+     * @param GlanceFactory $glanceFactory
      */
-    public function __construct(JwtParser $jwtParser, RoomRepositoryModel $roomRepositoryModel)
+    public function __construct(JwtParser $jwtParser, GlanceFactory $glanceFactory)
     {
         $this->jwtParser = $jwtParser;
-        $this->roomRepositoryModel = $roomRepositoryModel;
+        $this->glanceFactory = $glanceFactory;
     }
 
     /**
@@ -41,15 +41,6 @@ class Glance
             return new Response("unauthorized call", 401);
         }
 
-        $unReviewPrCount = $this->roomRepositoryModel->getUnreviewedPrCount($subscriber);
-
-        $data = [
-            'label' => [
-                'type' => 'html',
-                'value' => sprintf('<b>%d</b> unreviewed PR', $unReviewPrCount),
-            ]
-        ];
-
-        return new JsonResponse($data);
+        return new JsonResponse($this->glanceFactory->createUnreviewedPr($subscriber));
     }
 }

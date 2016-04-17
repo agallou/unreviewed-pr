@@ -22,7 +22,7 @@ return [
     'controllers.hipchat.glance' => function(ContainerInterface $container) {
         return new \HipchatConnectTools\UnreviewedPr\Controller\Hipchat\Glance(
             $container->get('hipchat.jwt_parser'),
-            $container->get('model.room_repository')
+            $container->get('hipchat.glance_factory')
         );
     },
     'controllers.hipchat.webPanel' => function(ContainerInterface $container) {
@@ -45,6 +45,7 @@ return [
             $container->get('model.repository'),
             $container->get('model.subscriber'),
             $container->get('model.pull_request'),
+            $container->get('hipchat.glance_factory'),
             $container->get('github')
         );
     },

@@ -3,6 +3,8 @@
 namespace HipchatConnectTools\UnreviewedPr\Controller\Github;
 
 use HipchatConnectTools\UnreviewedPr\Github\PullRequestFactory;
+use HipchatConnectTools\UnreviewedPr\Hipchat\GlanceFactory;
+use HipchatConnectTools\UnreviewedPr\Hipchat\HipchatClient;
 use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\PullRequestModel;
 use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\RepositoryModel;
 use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\SubscriberModel;
@@ -35,17 +37,24 @@ class Webhook
     protected $pullRequestModel;
 
     /**
+     * @var GlanceFactory
+     */
+    protected $glanceFactory;
+
+    /**
      * @param RepositoryModel $repositoryModel
      * @param SubscriberModel $subscriberModel
      * @param PullRequestModel $pullRequestModel
+     * @param GlanceFactory $glanceFactory
      * @param Github $github
      */
-    public function __construct(RepositoryModel $repositoryModel, SubscriberModel $subscriberModel, PullRequestModel $pullRequestModel, Github $github)
+    public function __construct(RepositoryModel $repositoryModel, SubscriberModel $subscriberModel, PullRequestModel $pullRequestModel, GlanceFactory $glanceFactory, Github $github)
     {
         $this->repositoryModel = $repositoryModel;
-        $this->github = $github;
         $this->subscriberModel = $subscriberModel;
         $this->pullRequestModel = $pullRequestModel;
+        $this->glanceFactory = $glanceFactory;
+        $this->github = $github;
     }
 
     /**
@@ -83,6 +92,12 @@ class Webhook
             $this->pullRequestModel->updateByPk(['id' => $pullRequest['id']], $pullRequest);
         } else {
             $this->pullRequestModel->createAndSave($pullRequest);
+        }
+
+        $hipchatClient = new HipchatClient();
+        foreach ($this->subscriberModel->findAllOfRepository($respository) as $subscriber) {
+            $glanceContent = $this->glanceFactory->createUnreviewedPr($subscriber);
+            $hipchatClient->updateGlanceFromSubscriber($subscriber, $glanceContent, 'unreviewed-pr-glance');
         }
 
         return new Response("ok");

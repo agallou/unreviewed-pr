@@ -42,4 +42,49 @@ class HipchatClient
     {
         return $this->getToken($subscriber->get('hipchat_oauth_id'), $subscriber->get('hipchat_oauth_secret'));
     }
+
+    /**
+     * @param array $glanceContent
+     * @param string $glanceKey
+     * @param string $roomId
+     * @param string $hipchatToken
+     */
+    public function updateGlance(array $glanceContent, $glanceKey, $roomId, $hipchatToken)
+    {
+        $headers = array();
+        $headers[] = 'Content-Type: application/json';
+
+        $requestBody = array(
+            'glance' => [
+                [
+                    'key' => $glanceKey,
+                    'content' => $glanceContent,
+                ]
+            ]
+        );
+
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, sprintf("https://api.hipchat.com/v2/addon/ui/room/%s?auth_token=%s", $roomId, $hipchatToken));
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($requestBody));
+        curl_setopt($curl, CURLOPT_POST, 1);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+        curl_exec($curl);
+    }
+
+    /**
+     * @param Subscriber $subscriber
+     * @param array $glanceContent
+     * @param $glanceKey
+     *
+     * @throws \PommProject\ModelManager\Exception\ModelException
+     */
+    public function updateGlanceFromSubscriber(Subscriber $subscriber, array $glanceContent, $glanceKey)
+    {
+        $token = $subscriber->get('hipchat_token');
+        if (null === $token) {
+            return;
+        }
+        $this->updateGlance($glanceContent, $glanceKey, $subscriber->get('room_id'), $token);
+    }
 }
