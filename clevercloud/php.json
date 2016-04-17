@@ -1,5 +1,8 @@
 {
   "deploy": {
     "webroot": "/web"
+  },
+  "hooks": {
+    "postDeploy": "clevercloud/migrate_db.sh"
   }
 }
