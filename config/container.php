@@ -10,6 +10,7 @@ $containerBuilder->addDefinitions(__DIR__ . '/container/hipchat.php');
 $containerBuilder->addDefinitions(__DIR__ . '/container/model.php');
 $containerBuilder->addDefinitions(__DIR__ . '/container/controllers.php');
 $containerBuilder->addDefinitions(__DIR__ . '/container/middleware.php');
+$containerBuilder->addDefinitions(__DIR__ . '/container/importer.php');
 
 
 return $containerBuilder->build();

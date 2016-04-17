@@ -44,9 +44,8 @@ return [
         return new \HipchatConnectTools\UnreviewedPr\Controller\Github\Webhook(
             $container->get('model.repository'),
             $container->get('model.subscriber'),
-            $container->get('model.pull_request'),
             $container->get('hipchat.glance_factory'),
-            $container->get('github')
+            $container->get('importer.pull_request')
         );
     },
     'controllers.app.index' => function(ContainerInterface $container) {

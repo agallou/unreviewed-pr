@@ -2,14 +2,12 @@
 
 namespace HipchatConnectTools\UnreviewedPr\Controller\Github;
 
-use HipchatConnectTools\UnreviewedPr\Github\PullRequestFactory;
 use HipchatConnectTools\UnreviewedPr\Hipchat\GlanceFactory;
 use HipchatConnectTools\UnreviewedPr\Hipchat\HipchatClient;
+use HipchatConnectTools\UnreviewedPr\Importer\PullRequestImporter;
 use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\Repository;
-use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\PullRequestModel;
 use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\RepositoryModel;
 use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\SubscriberModel;
-use League\OAuth2\Client\Provider\Github;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,24 +21,19 @@ class Webhook
     protected $repositoryModel;
 
     /**
-     * @var Github
-     */
-    protected $github;
-
-    /**
      * @var SubscriberModel
      */
     protected $subscriberModel;
 
     /**
-     * @var PullRequestModel
-     */
-    protected $pullRequestModel;
-
-    /**
      * @var GlanceFactory
      */
     protected $glanceFactory;
+
+    /**
+     * @var PullRequestImporter
+     */
+    protected $pullRequestImporter;
 
     /**
      * @var HipchatClient
@@ -50,17 +43,15 @@ class Webhook
     /**
      * @param RepositoryModel $repositoryModel
      * @param SubscriberModel $subscriberModel
-     * @param PullRequestModel $pullRequestModel
      * @param GlanceFactory $glanceFactory
-     * @param Github $github
+     * @param PullRequestImporter $pullRequestImporter
      */
-    public function __construct(RepositoryModel $repositoryModel, SubscriberModel $subscriberModel, PullRequestModel $pullRequestModel, GlanceFactory $glanceFactory, Github $github)
+    public function __construct(RepositoryModel $repositoryModel, SubscriberModel $subscriberModel, GlanceFactory $glanceFactory, PullRequestImporter $pullRequestImporter)
     {
         $this->repositoryModel = $repositoryModel;
         $this->subscriberModel = $subscriberModel;
-        $this->pullRequestModel = $pullRequestModel;
         $this->glanceFactory = $glanceFactory;
-        $this->github = $github;
+        $this->pullRequestImporter = $pullRequestImporter;
         $this->hipchatClient = new HipchatClient();
     }
 
@@ -91,19 +82,7 @@ class Webhook
             return new Response('Unauthorized webhook', 401);
         }
 
-        $token = $this->subscriberModel->findRandomTokenForRepository($repository);
-
-        $githubRequest = $this->github->getAuthenticatedRequest('GET', $infos['pull_request_url'], $token);
-        $githubResponse = $this->github->getResponse($githubRequest);
-
-        $pullRequestFactory = new PullRequestFactory();
-        $pullRequest = $pullRequestFactory->createFromGithubResponse($githubResponse);
-
-        if ($this->pullRequestModel->existWhere('id = $*', [$pullRequest['id']])) {
-            $this->pullRequestModel->updateByPk(['id' => $pullRequest['id']], $pullRequest);
-        } else {
-            $this->pullRequestModel->createAndSave($pullRequest);
-        }
+        $this->pullRequestImporter->importFromUrl($repository, $infos['pull_request_url']);
 
         foreach ($this->subscriberModel->findAllOfRepository($repository) as $subscriber) {
             $glanceContent = $this->glanceFactory->createUnreviewedPr($subscriber);
