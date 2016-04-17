@@ -41,6 +41,7 @@ class PullRequest extends RowStructure
             ->addField('number', 'int4')
             ->addField('label', 'varchar')
             ->addField('comment_count', 'int4')
+            ->addField('opened_at', 'timestamp')
             ;
     }
 }

@@ -41,6 +41,7 @@ class Init extends AbstractMigration
                 ->addColumn('number', 'integer')
                 ->addColumn('label', 'string', array('length' => 255))
                 ->addColumn('comment_count', 'integer')
+                ->addColumn('opened_at', 'timestamp')
                 ->addForeignKey('repository_id', 'repository', 'id')
                 ->create()
         ;
