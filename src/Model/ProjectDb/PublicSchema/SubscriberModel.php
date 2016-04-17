@@ -50,4 +50,26 @@ class SubscriberModel extends Model
         return $videos->current();
     }
 
+    /**
+     * @param Repository $repository
+     *
+     * @return null|string
+     */
+    public function findRandomTokenForRepository(Repository $repository)
+    {
+        $sql = <<<EOF
+select github_token as result
+from
+    subscriber
+    join room_repository on (subscriber.hipchat_oauth_id = room_repository.hipchat_oauth_id)
+    join repository on (room_repository.repository_id = repository.id)
+where
+  :condition
+EOF;
+
+        $where = 'repository.id = $*';
+        $values = array($repository->get('id'));
+
+        return $this->fetchSingleValue($sql, $where, $values);
+    }
 }

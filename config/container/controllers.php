@@ -40,8 +40,13 @@ return [
             $container->get('github')
         );
     },
-    'controllers.github.webhook' => function() {
-        return new \HipchatConnectTools\UnreviewedPr\Controller\Github\Webhook();
+    'controllers.github.webhook' => function(ContainerInterface $container) {
+        return new \HipchatConnectTools\UnreviewedPr\Controller\Github\Webhook(
+            $container->get('model.repository'),
+            $container->get('model.subscriber'),
+            $container->get('model.pull_request'),
+            $container->get('github')
+        );
     },
     'controllers.app.list_repositories' => function(ContainerInterface $container) {
         return new \HipchatConnectTools\UnreviewedPr\Controller\App\ListRepositories(

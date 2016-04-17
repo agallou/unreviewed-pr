@@ -20,5 +20,9 @@
         "psr-4": {
             "HipchatConnectTools\\UnreviewedPr\\": "src/"
         }
+    },
+    "require-dev": {
+        "atoum/atoum": "^2.6",
+        "atoum/stubs": "^2.5"
     }
 }
