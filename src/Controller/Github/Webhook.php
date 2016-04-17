@@ -75,17 +75,17 @@ class Webhook
             return new Response('Unsupported webook', 204);
         }
 
-        $respository = $this->repositoryModel->findByPK(array('id' => $infos['repository_id']));
+        $repository = $this->repositoryModel->findByPK(array('id' => $infos['repository_id']));
 
-        if (null === $respository) {
+        if (null === $repository) {
             return new Response('Repository not found', 204);
         }
 
-        if (!$this->checkSignature($request, $respository)) {
+        if (!$this->checkSignature($request, $repository)) {
             return new Response('Unauthorized webhook', 401);
         }
 
-        $token = $this->subscriberModel->findRandomTokenForRepository($respository);
+        $token = $this->subscriberModel->findRandomTokenForRepository($repository);
 
         $githubRequest = $this->github->getAuthenticatedRequest('GET', $infos['pull_request_url'], $token);
         $githubResponse = $this->github->getResponse($githubRequest);
@@ -100,7 +100,7 @@ class Webhook
         }
 
         $hipchatClient = new HipchatClient();
-        foreach ($this->subscriberModel->findAllOfRepository($respository) as $subscriber) {
+        foreach ($this->subscriberModel->findAllOfRepository($repository) as $subscriber) {
             $glanceContent = $this->glanceFactory->createUnreviewedPr($subscriber);
             $hipchatClient->updateGlanceFromSubscriber($subscriber, $glanceContent, 'unreviewed-pr-glance');
         }
