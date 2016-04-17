@@ -43,6 +43,11 @@ class Webhook
     protected $glanceFactory;
 
     /**
+     * @var HipchatClient
+     */
+    protected $hipchatClient;
+
+    /**
      * @param RepositoryModel $repositoryModel
      * @param SubscriberModel $subscriberModel
      * @param PullRequestModel $pullRequestModel
@@ -56,6 +61,7 @@ class Webhook
         $this->pullRequestModel = $pullRequestModel;
         $this->glanceFactory = $glanceFactory;
         $this->github = $github;
+        $this->hipchatClient = new HipchatClient();
     }
 
     /**
@@ -99,10 +105,9 @@ class Webhook
             $this->pullRequestModel->createAndSave($pullRequest);
         }
 
-        $hipchatClient = new HipchatClient();
         foreach ($this->subscriberModel->findAllOfRepository($repository) as $subscriber) {
             $glanceContent = $this->glanceFactory->createUnreviewedPr($subscriber);
-            $hipchatClient->updateGlanceFromSubscriber($subscriber, $glanceContent, 'unreviewed-pr-glance');
+            $this->hipchatClient->updateGlanceFromSubscriber($subscriber, $glanceContent, 'unreviewed-pr-glance');
         }
 
         return new Response("ok");
