@@ -41,6 +41,7 @@ class Subscriber extends RowStructure
             ->addField('room_id', 'varchar')
             ->addField('group_id', 'varchar')
             ->addField('github_token', 'varchar')
+            ->addField('hipchat_token', 'varchar')
             ;
     }
 }

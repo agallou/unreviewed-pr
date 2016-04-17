@@ -13,6 +13,7 @@ class Init extends AbstractMigration
                 ->addColumn('room_id', 'string', array('length' => 30))
                 ->addColumn('group_id', 'string', array('length' => 30))
                 ->addColumn('github_token', 'string', array('length' => 60, 'null' => true))
+                ->addColumn('hipchat_token', 'string', array('length' => 60, 'null' => true))
                 ->create()
         ;
 
