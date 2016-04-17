@@ -52,9 +52,17 @@ class Capabilities
                 'url' => $this->baseUrl . '/images/unreviewed-pr-glance.png',
                 'url@2x' => $this->baseUrl . '/images/unreviewed-pr-glance.png',
             ],
-            'conditions' => [],
+            'conditions' => [
+                [
+                    'condition' => 'glance_matches',
+                    'params' => [
+                        'metadata' => [
+                            ['attr' => 'isShowned', 'eq' => true]
+                        ]
+                    ]
+                ]
+            ],
         ];
-
 
         $capabilities['capabilities']['webPanel'][] = [
             'key' => 'unreviewed-pr-list',

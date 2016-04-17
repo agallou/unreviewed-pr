@@ -30,6 +30,9 @@ class GlanceFactory
             'label' => [
                 'type' => 'html',
                 'value' => sprintf('<b>%d</b> unreviewed PR', $unReviewPrCount),
+            ],
+            'metadata' => [
+                'isShowned' => 0 !== $unReviewPrCount,
             ]
         ];
     }
