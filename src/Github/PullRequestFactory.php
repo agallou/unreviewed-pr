@@ -16,7 +16,7 @@ class PullRequestFactory
             'repository_id' => $githubResponse['head']['repo']['id'],
             'number' => $githubResponse['number'],
             'label' => $githubResponse['title'],
-            'comment_count' => $githubResponse['review_comments'],
+            'comment_count' => $githubResponse['review_comments'] + $githubResponse['comments'],
         ];
     }
 
