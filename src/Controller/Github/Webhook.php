@@ -5,6 +5,7 @@ namespace HipchatConnectTools\UnreviewedPr\Controller\Github;
 use HipchatConnectTools\UnreviewedPr\Github\PullRequestFactory;
 use HipchatConnectTools\UnreviewedPr\Hipchat\GlanceFactory;
 use HipchatConnectTools\UnreviewedPr\Hipchat\HipchatClient;
+use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\Repository;
 use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\PullRequestModel;
 use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\RepositoryModel;
 use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\SubscriberModel;
@@ -80,6 +81,10 @@ class Webhook
             return new Response('Repository not found', 204);
         }
 
+        if (!$this->checkSignature($request, $respository)) {
+            return new Response('Unauthorized webhook', 401);
+        }
+
         $token = $this->subscriberModel->findRandomTokenForRepository($respository);
 
         $githubRequest = $this->github->getAuthenticatedRequest('GET', $infos['pull_request_url'], $token);
@@ -101,5 +106,26 @@ class Webhook
         }
 
         return new Response("ok");
+    }
+
+    /**
+     * @param Request $request
+     * @param Repository $repository
+
+     * @return bool|null
+     */
+    protected function checkSignature(Request $request, Repository $repository)
+    {
+        $signatures = array();
+        parse_str($request->headers->get('X-Hub-Signature'), $signatures);
+        $validSignatature = null;
+        foreach ($signatures as $algo => $hash) {
+            $calculatedHash = hash_hmac($algo, $request->getContent(), $repository->get('github_webhook_secret'));
+            if (false !== $validSignatature && $calculatedHash == $hash) {
+                $validSignatature = true;
+            }
+        }
+
+        return true === $validSignatature;
     }
 }
