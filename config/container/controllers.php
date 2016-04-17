@@ -58,6 +58,7 @@ return [
         return new \HipchatConnectTools\UnreviewedPr\Controller\App\ListRepositories(
             $container->get('model.repository'),
             $container->get('model.room_repository'),
+            $container->get('importer.pull_request'),
             $container->get('session'),
             $container->get('github'),
             $container->get('form.factory'),

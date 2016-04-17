@@ -2,6 +2,8 @@
 
 namespace HipchatConnectTools\UnreviewedPr\Controller\App;
 
+use HipchatConnectTools\UnreviewedPr\Importer\PullRequestImporter;
+use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\Repository;
 use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\RepositoryModel;
 use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\RoomRepositoryModel;
 use HipchatConnectTools\UnreviewedPr\Model\ProjectDb\PublicSchema\Subscriber;
@@ -20,13 +22,24 @@ class ListRepositories
     protected $repositoryModel;
 
     /**
-     * @var Github
+     * @var RoomRepositoryModel
      */
-    protected $github;
+    protected $roomRepositoryModel;
+
+    /**
+     * @var PullRequestImporter
+     */
+    protected $pullRequestImporter;
+
     /**
      * @var Session
      */
     protected $session;
+
+    /**
+     * @var Github
+     */
+    protected $github;
 
     /**
      * @var FormFactory
@@ -39,11 +52,6 @@ class ListRepositories
     protected $twig;
 
     /**
-     * @var RoomRepositoryModel
-     */
-    protected $roomRepositoryModel;
-
-    /**
      * @var string
      */
     protected $appUrl;
@@ -51,6 +59,7 @@ class ListRepositories
     /**
      * @param RepositoryModel $repositoryModel
      * @param RoomRepositoryModel $roomRepositoryModel
+     * @param PullRequestImporter $pullRequestImporter
      * @param Session $session
      * @param Github $github
      * @param FormFactory $formFactory
@@ -60,6 +69,7 @@ class ListRepositories
     public function __construct(
         RepositoryModel $repositoryModel,
         RoomRepositoryModel $roomRepositoryModel,
+        PullRequestImporter $pullRequestImporter,
         Session $session,
         Github $github,
         FormFactory $formFactory,
@@ -73,6 +83,7 @@ class ListRepositories
         $this->formFactory = $formFactory;
         $this->twig = $twig;
         $this->appUrl = $appUrl;
+        $this->pullRequestImporter = $pullRequestImporter;
     }
 
     /**
@@ -174,12 +185,33 @@ class ListRepositories
                     'full_name' => substr($label, 0, 40), //TODO update field length
                     'github_webhook_secret' => $secret,
                 ));
+
+                $this->importCurrentPrs($subscriber, $label);
             }
 
             $this->roomRepositoryModel->createAndSave([
                 'repository_id' => $id,
                 'hipchat_oauth_id' => $subscriber->get('hipchat_oauth_id'),
             ]);
+        }
+    }
+
+    /**
+     * @param Subscriber $subscriber
+     * @param $repositoryFullName
+     *
+     * @throws \PommProject\ModelManager\Exception\ModelException
+     */
+    protected function importCurrentPrs(Subscriber $subscriber, $repositoryFullName)
+    {
+        $githubRequestPrs = $this->github->getAuthenticatedRequest('GET', 'https://api.github.com/repos/' . $repositoryFullName . '/pulls', $subscriber->get('github_token'));
+        try {
+            $openedPrs = $this->github->getResponse($githubRequestPrs);
+            foreach ($openedPrs as $openedPr) {
+                $this->pullRequestImporter->importFromGithubResponse($openedPr);
+            }
+        } catch (\Exception $e) {
+            // this import is optional
         }
     }
 }

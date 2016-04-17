@@ -54,6 +54,14 @@ class PullRequestImporter
         $githubRequest = $this->github->getAuthenticatedRequest('GET', $pullRequestUrl, $token);
         $githubResponse = $this->github->getResponse($githubRequest);
 
+        $this->importFromGithubResponse($githubResponse);
+    }
+
+    /**
+     * @param array $githubResponse
+     */
+    public function importFromGithubResponse(array $githubResponse)
+    {
         $pullRequest = $this->pullRequestFactory->createFromGithubResponse($githubResponse);
 
         if ($this->pullRequestModel->existWhere('id = $*', [$pullRequest['id']])) {
