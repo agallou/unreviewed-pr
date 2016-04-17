@@ -17,7 +17,7 @@ class PullRequestFactory extends \atoum
                         'repository_id' => 56427893,
                         'number' => 1,
                         'label' => 'test 1',
-                        'comment_count' => 1,
+                        'comment_count' => 3,
                     ))
         ;
     }
