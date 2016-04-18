@@ -80,6 +80,7 @@ from room_repository tabalias
     inner join repository on (pull_request.repository_id = repository.id)
 where
   :condition
+order by pull_request.opened_at desc
 EOF;
 
         $where = 'comment_count = $* and hipchat_oauth_id = $*';
