@@ -180,13 +180,13 @@ class ListRepositories
                     //in case the hook already exists
                 }
 
-                $this->repositoryModel->createAndSave(array(
+                $repository = $this->repositoryModel->createAndSave(array(
                     'id' => $id,
                     'full_name' => substr($label, 0, 40), //TODO update field length
                     'github_webhook_secret' => $secret,
                 ));
 
-                $this->importCurrentPrs($subscriber, $label);
+                $this->importCurrentPrs($subscriber, $repository, $label);
             }
 
             $this->roomRepositoryModel->createAndSave([
@@ -198,20 +198,27 @@ class ListRepositories
 
     /**
      * @param Subscriber $subscriber
+     * @param Repository $repository
      * @param $repositoryFullName
      *
      * @throws \PommProject\ModelManager\Exception\ModelException
      */
-    protected function importCurrentPrs(Subscriber $subscriber, $repositoryFullName)
+    protected function importCurrentPrs(Subscriber $subscriber, Repository $repository, $repositoryFullName)
     {
         $githubRequestPrs = $this->github->getAuthenticatedRequest('GET', 'https://api.github.com/repos/' . $repositoryFullName . '/pulls', $subscriber->get('github_token'));
         try {
             $openedPrs = $this->github->getResponse($githubRequestPrs);
-            foreach ($openedPrs as $openedPr) {
-                $this->pullRequestImporter->importFromGithubResponse($openedPr);
-            }
         } catch (\Exception $e) {
             // this import is optional
+            return;
+        }
+
+        foreach ($openedPrs as $openedPr) {
+            try {
+                $this->pullRequestImporter->importFromUrl($repository, $openedPr['url'], $subscriber->get('github_token'));
+            } catch (\Exception $e) {
+                // this import is optional
+            }
         }
     }
 }

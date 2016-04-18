@@ -47,9 +47,11 @@ class PullRequestImporter
      * @param Repository $repository
      * @param string $pullRequestUrl
      */
-    public function importFromUrl(Repository $repository, $pullRequestUrl)
+    public function importFromUrl(Repository $repository, $pullRequestUrl, $token = null)
     {
-        $token = $this->subscriberModel->findRandomTokenForRepository($repository);
+        if (null === $token) {
+            $token = $this->subscriberModel->findRandomTokenForRepository($repository);
+        }
 
         $githubRequest = $this->github->getAuthenticatedRequest('GET', $pullRequestUrl, $token);
         $githubResponse = $this->github->getResponse($githubRequest);
