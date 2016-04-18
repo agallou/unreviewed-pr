@@ -44,8 +44,8 @@
         <ul class="aui-nav aui-navgroup-vertical" style="background-color: #fff">
             {% for pull_request in pull_requests %}
             <li class="hc-roster-item">
-                <div class="aui-nav-item" title="http://www.google.fr">
-                    <a class="hc-link" target="_blank" rel="noreferrer" href="http://github.com/{{ pull_request.repository_full_name }}/pull/{{ pull_request.number }}">{{ pull_request.get('label') }}</a>
+                <div class="aui-nav-item" title="{{ pull_request.label }}">
+                    <a class="hc-link" target="_blank" rel="noreferrer" href="http://github.com/{{ pull_request.repository_full_name }}/pull/{{ pull_request.number }}">{{ pull_request.label }}</a>
                     <span class="hc-roster-user-name">{{ pull_request.repository_full_name }}</span>
                     <span class="hc-roster-date">{{ pull_request.opened_at|date('M-d H:i') }}</span>
                 </div>
