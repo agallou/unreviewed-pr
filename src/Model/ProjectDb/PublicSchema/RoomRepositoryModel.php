@@ -53,8 +53,8 @@ where
   :condition
 EOF;
 
-        $where = 'comment_count = $* and hipchat_oauth_id = $*';
-        $values = array('0', $subscriber->get('hipchat_oauth_id'));
+        $where = 'comment_count = $* and hipchat_oauth_id = $* and state = $*';
+        $values = array('0', $subscriber->get('hipchat_oauth_id'), 'open');
 
         return $this->fetchSingleValue($sql, $where, $values);
     }
@@ -83,8 +83,8 @@ where
 order by pull_request.opened_at desc
 EOF;
 
-        $where = 'comment_count = $* and hipchat_oauth_id = $*';
-        $values = array('0', $subscriber->get('hipchat_oauth_id'));
+        $where = 'comment_count = $* and hipchat_oauth_id = $* and state = $*';
+        $values = array('0', $subscriber->get('hipchat_oauth_id'), 'open');
 
         $sql = strtr(
             $sql,

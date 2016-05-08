@@ -18,6 +18,7 @@ class PullRequestFactory
             'label' => $githubResponse['title'],
             'comment_count' => $githubResponse['review_comments'] + $githubResponse['comments'],
             'opened_at' => new \DateTime($githubResponse['created_at']),
+            'state' => $githubResponse['state'],
         ];
     }
 

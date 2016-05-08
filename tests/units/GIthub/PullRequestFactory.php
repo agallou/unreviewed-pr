@@ -18,7 +18,8 @@ class PullRequestFactory extends \atoum
                         'number' => 1,
                         'label' => 'test 1',
                         'comment_count' => 3,
-                        'opened_at' => new \DateTime('2016-04-17T09:11:28Z')
+                        'opened_at' => new \DateTime('2016-04-17T09:11:28Z'),
+                        'state' => 'open',
                     ))
         ;
     }
